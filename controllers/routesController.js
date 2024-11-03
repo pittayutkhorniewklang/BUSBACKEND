@@ -78,17 +78,5 @@ exports.addRoute = async (req, res) => {
 };
 
 
-// ลบ route
-exports.deleteRoute = async (req, res) => {
-  const { id } = req.params;
-  console.log('Received ID for deletion:', id); // ตรวจสอบค่า id ที่ได้รับ
-  try {
-      const pool = await poolPromise;
-      await pool.request()
-          .input('id', sql.Int, id)
-          .query('DELETE FROM Routes WHERE id = @id');
-      res.status(200).json({ message: 'Route deleted successfully' });
-  } catch (err) {
-      res.status(500).json({ message: err.message });
-  }
-};
+
+

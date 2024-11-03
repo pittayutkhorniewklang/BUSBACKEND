@@ -7,7 +7,6 @@ router.get('/', getRoutes);
 
 // เส้นทางสำหรับเพิ่มข้อมูลเส้นทางใหม่
 router.post('/', addRoute);
-router.post('/', addRoute);
-router.delete('/:id', deleteRoute);
+
 
 module.exports = router;
