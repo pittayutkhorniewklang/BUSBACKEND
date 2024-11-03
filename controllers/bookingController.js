@@ -1,5 +1,3 @@
-// bookingController.js
-const db = require('../models');  // ตรวจสอบให้เส้นทางตรงกับที่เก็บไฟล์ dbConfig ของคุณ
 
 exports.createBooking = async (req, res) => {
     console.log("Request Body:", req.body);
