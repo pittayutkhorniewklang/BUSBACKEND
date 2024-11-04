@@ -1,25 +1,39 @@
+const sql = require('mssql');
+const { poolPromise } = require('../config/dbConfig'); // ตรวจสอบให้แน่ใจว่า path และการตั้งค่าถูกต้อง
 
-exports.createBooking = async (req, res) => {
-    console.log("Request Body:", req.body);
-    const { user_id, trip_id, selectedSeats, date } = req.body;
-    
+exports.getBookingData = async (req, res) => {
     try {
-        for (let seat of selectedSeats) {
-            console.log("Processing seat:", seat);
-            await db.Bookings.create({
-                user_id,
-                trip_id,
-                seat_number: seat,
-                booking_date: date
-            });
-        }
-        res.status(200).json({ message: 'การจองของคุณถูกบันทึกแล้ว!' });
+        const pool = await poolPromise;
+        const result = await pool.request().query('SELECT * FROM Bookings');
+        res.status(200).json(result.recordset);
     } catch (error) {
-        console.error("Error in createBooking:", error);  // แสดงข้อผิดพลาดใน console
-        res.status(500).json({ message: 'เกิดข้อผิดพลาดในการจอง' });
+        console.error('Error fetching booking data:', error);
+        res.status(500).json({ message: 'Error fetching booking data' });
     }
 };
 
-exports.getBookingData = (req, res) => {
-    res.send("This is the booking data");  // ตัวอย่างการส่งข้อมูลเพื่อตรวจสอบการทำงาน
+exports.createBooking = async (req, res) => {
+    const { user_id, trip_id, selectedSeats, date } = req.body;
+    console.log('Received booking data:', req.body); // ตรวจสอบข้อมูลที่ได้รับ
+
+    try {
+        const pool = await poolPromise;
+        for (let seat of selectedSeats) {
+            console.log('Inserting seat:', seat); // ตรวจสอบข้อมูลที่นั่ง
+            await pool.request()
+                .input('user_id', sql.Int, user_id)
+                .input('trip_id', sql.Int, trip_id)
+                .input('number_of_seats', sql.Int, seat)
+                .input('booking_date', sql.Date, date)
+                .query(`
+                    INSERT INTO Bookings (user_id, trip_id, number_of_seats, booking_date)
+                    VALUES (@user_id, @trip_id, @number_of_seats, @booking_date)
+                `);
+                
+        }
+        res.status(200).json({ message: 'การจองของคุณถูกบันทึกแล้ว!' });
+    } catch (error) {
+        console.error("Error in createBooking:", error); // แสดงข้อผิดพลาดใน Console
+        res.status(500).json({ message: 'เกิดข้อผิดพลาดในการจอง' });
+    }
 };
