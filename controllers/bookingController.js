@@ -13,10 +13,12 @@ exports.getBookingData = async (req, res) => {
 };
 
 exports.createBooking = async (req, res) => {
-    const { user_id, trip_id, selectedSeats, date } = req.body;
-    console.log('Received booking data:', req.body); // ตรวจสอบข้อมูลที่ได้รับ
-
     try {
+        const { trip_id, selectedSeats, date } = req.body;
+        const user_id = req.user.id; // สมมติว่าคุณเก็บ user ใน req.user จากการยืนยันตัวตน (authentication)
+
+        console.log('Received booking data:', { user_id, trip_id, selectedSeats, date }); // ตรวจสอบข้อมูลที่ได้รับ
+
         const pool = await poolPromise;
         for (let seat of selectedSeats) {
             console.log('Inserting seat:', seat); // ตรวจสอบข้อมูลที่นั่ง
@@ -29,8 +31,8 @@ exports.createBooking = async (req, res) => {
                     INSERT INTO Bookings (user_id, trip_id, number_of_seats, booking_date)
                     VALUES (@user_id, @trip_id, @number_of_seats, @booking_date)
                 `);
-                
         }
+
         res.status(200).json({ message: 'การจองของคุณถูกบันทึกแล้ว!' });
     } catch (error) {
         console.error("Error in createBooking:", error); // แสดงข้อผิดพลาดใน Console
