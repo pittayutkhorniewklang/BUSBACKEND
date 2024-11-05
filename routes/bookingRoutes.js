@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { createBooking, getBookingData } = require('../controllers/bookingController');
 
-router.get('/', getBookingData);  // GET สำหรับข้อมูล booking
-router.post('/book', createBooking);  // POST สำหรับการจองที่นั่ง
+router.get('/', getBookingData);  // ใช้ callback function ที่ถูกต้อง
+router.post('/book', createBooking);
 
 module.exports = router;
