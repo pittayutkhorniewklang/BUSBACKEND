@@ -72,12 +72,15 @@ exports.updateReservation = async (req, res) => {
 
 // ลบการจอง
 exports.deleteReservation = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // รับ id จาก request params
     try {
         const pool = await poolPromise;
-        await pool.request()
+        const result = await pool.request()
             .input('id', sql.Int, id)
-            .query('DELETE FROM Bookings WHERE id = @id');
+            .query('DELETE FROM Bookings WHERE id = @id'); // ตรวจสอบว่า id ตรงกับ column ที่ใช้ใน database
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ message: 'Reservation not found' });
+        }
         res.status(200).json({ message: 'Reservation deleted successfully' });
     } catch (error) {
         console.error('Error deleting reservation:', error);

@@ -6,9 +6,9 @@ const reservationController = require('../controllers/reservationController');
 router.get('/', reservationController.getReservations);
 
 // อัพเดทการจอง
-router.put('/reservations/:id', reservationController.updateReservation);
+router.put('/:id', reservationController.updateReservation);
 
 // ลบการจอง
-router.delete('/reservations/:id', reservationController.deleteReservation);
+router.delete('/:id', reservationController.deleteReservation);
 
 module.exports = router;
