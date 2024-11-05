@@ -61,7 +61,7 @@ exports.deleteUser = async (req, res) => {
 exports.getUserCount = async (req, res) => {
     try {
         const pool = await poolPromise;
-        const result = await pool.request().query(`SELECT COUNT(*) as count FROM Users`);
+        const result = await pool.request().query(`SELECT COUNT(*) AS count FROM Users`);
         res.status(200).json(result.recordset[0].count);
     } catch (error) {
         console.error('Error fetching user count:', error);

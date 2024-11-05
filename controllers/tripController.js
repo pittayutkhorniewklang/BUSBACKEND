@@ -28,4 +28,18 @@ exports.deleteTrip = async (req, res) => {
     console.error('Error deleting trip:', err);
     res.status(500).json({ message: err.message });
   }
+
+// ฟังก์ชันนับจำนวนเที่ยวรถ
+exports.getTripCount = async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query(`SELECT COUNT(*) AS count FROM Trips`);
+        res.status(200).json(result.recordset[0].count);
+    } catch (error) {
+        console.error('Error fetching trip count:', error);
+        res.status(500).json({ message: 'Error fetching trip count' });
+    }
+};
+
+
 };
