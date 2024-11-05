@@ -5,13 +5,32 @@ const { sql, poolPromise } = require('../config/dbConfig');
 exports.getReservations = async (req, res) => {
     try {
         const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM Bookings');
+        const result = await pool.request().query(`
+            SELECT 
+                b.id,
+                b.user_id,
+                b.trip_id,
+                b.number_of_seats,
+                b.booking_date,
+                u.username,
+                r.start AS start_location,
+                r.end_point AS end_location
+            FROM 
+                Bookings b
+            LEFT JOIN 
+                Users u ON b.user_id = u.id
+            LEFT JOIN 
+                Trips t ON b.trip_id = t.id
+            LEFT JOIN 
+                Routes r ON t.route_id = r.id
+        `);
         res.status(200).json(result.recordset);
     } catch (error) {
         console.error('Error fetching reservations:', error);
         res.status(500).json({ message: 'Error fetching reservations' });
     }
 };
+
 
 // เพิ่มการจอง (ถ้าจำเป็น)
 exports.createReservation = async (req, res) => {

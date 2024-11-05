@@ -3,7 +3,7 @@ const router = express.Router();
 const reservationController = require('../controllers/reservationController');
 
 // ดึงข้อมูลการจองทั้งหมด
-router.get('/reservations', reservationController.getReservations);
+router.get('/', reservationController.getReservations);
 
 // อัพเดทการจอง
 router.put('/reservations/:id', reservationController.updateReservation);
